@@ -1,39 +1,49 @@
 package br.edu.ifspcjo.ads.dw2a6.ifitness.resources;
 
-import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import br.edu.ifspcjo.ads.dw2a6.ifitness.model.Gender;
+import br.edu.ifspcjo.ads.dw2a6.ifitness.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import br.edu.ifspcjo.ads.dw2a6.ifitness.model.User;
 
 @RestController
+@RequestMapping("/users")
 public class UserResource {
 	
-	@GetMapping("/users")
+	@Autowired
+	private UserRepository userRepository;
+	
+	@GetMapping
 	public List<User> list(){
-		User user1 = new User();
-		user1.setId(1L);
-		user1.setName("Fernando");
-		user1.setEmail("fernandoduarte@ifsp.edu.br");
-		user1.setPassword("1234");
-		user1.setBirthDate(LocalDate.of(1975, 11, 16));
-		user1.setGender(Gender.MASCULINO);
+		return userRepository.findAll();
 		
-		User user2 = new User();
-		user2.setId(1L);
-		user2.setName("Paulo");
-		user2.setEmail("paulo@ifsp.edu.br");
-		user2.setPassword("1234");
-		user2.setBirthDate(LocalDate.of(1980, 1, 1));
-		user2.setGender(Gender.MASCULINO);
+	}
+	
+	@PostMapping
+	public User create(@RequestBody User user, HttpServletResponse response) {
 		
-		User user3 = new User();
+		return userRepository.save(user);
 		
-		return Arrays.asList(user1, user2, user3);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<User> findById(@PathVariable Long id) {
+		
+		Optional<User> user = userRepository.findById(id);
+		if(user.isPresent()) {
+			return ResponseEntity.ok(user.get());
+		}
+		
+		return ResponseEntity.notFound().build();
 	}
 
 }

@@ -29,6 +29,7 @@ public class User {
 	private LocalDate birthDate;
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
+	private Boolean active;
 
 	public Long getId() {
 		return id;
@@ -76,6 +77,15 @@ public class User {
 
 	public void setGender(Gender gender) {
 		this.gender = gender;
+	}
+	
+	
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 	@Override
